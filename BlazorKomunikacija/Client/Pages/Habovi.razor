@@ -1,0 +1,31 @@
+﻿@page "/h1"
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager NM
+
+<h3>Habovi</h3>
+<p><b>@_broj</b></p>
+<button @onclick="Inc">Hub1</button>
+
+@code 
+{
+	private int _broj;
+	private HubConnection HC;
+	override protected async Task OnInitializedAsync()
+	{
+		HC = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("h1")).Build();
+
+		HC.On<int>("broj", (br) =>
+		{
+			_broj = br;
+			StateHasChanged();
+		});
+
+		await HC.StartAsync();
+		HC.SendAsync("GetVal");
+	}
+
+	private void Inc()
+	{
+		HC.SendAsync("Inc1");
+	}
+}

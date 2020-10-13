@@ -1,0 +1,35 @@
+﻿@page "/"
+@inject StateContainer sk
+
+<h1>Hello, world!</h1>
+<p><b>@_testCallBack</b></p>
+<p>Current count: @sk.Broj</p>
+<p>Nesto tamo: @sk.NekiString</p>
+<p>
+	<Counter currentCount="10" Nesto="CallBack" />
+	<FetchData />
+	<Counter currentCount="15" Nesto="CallBack" />
+</p>
+
+<CascadingValue Name="Broj" Value="_nekiBroj">
+	<Counter />
+	<Counter />
+	<Counter />
+</CascadingValue>
+
+@code
+{
+	private string _testCallBack;
+	public int _nekiBroj = 123;
+
+	override protected void OnInitialized()
+	{
+		sk.DosloDoPromene += StateHasChanged;
+	}
+
+	public void CallBack(DveStvari ds)
+	{
+		_testCallBack = ds._broj.ToString() + "   " + ds._ime;
+		StateHasChanged();
+	}
+}

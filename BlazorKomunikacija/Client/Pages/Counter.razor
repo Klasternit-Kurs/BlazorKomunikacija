@@ -1,0 +1,36 @@
+﻿@page "/counter"
+@inject StateContainer sk
+
+
+<h1>Counter</h1>
+<p>Moj broj je: @_nekiTamoBroj</p>
+<p>Current count: @sk.Broj</p>
+<p>Nesto tamo: @sk.NekiString</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+	[CascadingParameter (Name = "Broj")]
+	private int _nekiTamoBroj { get; set; }
+
+
+	[Parameter]
+	public int currentCount { get; set; } = 0;
+
+	[Parameter]
+	public EventCallback<DveStvari> Nesto { get;set; }
+
+
+	override protected void OnInitialized()
+	{
+		sk.DosloDoPromene += StateHasChanged;
+	}
+
+	private void IncrementCount()
+	{
+		sk.Broj++;
+		sk.NekiString = "Nesto";
+		Nesto.InvokeAsync(new DveStvari { _broj=currentCount, _ime ="Nesto" });
+		StateHasChanged();
+	}
+}
